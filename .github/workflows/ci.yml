@@ -1,0 +1,83 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ] # Adjust branch names as per your strategy
+  pull_request:
+    branches: [ main, develop ] # Adjust branch names
+
+jobs:
+  lint-and-test-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 pytest # Assuming flake8 for linting, pytest for tests
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        pytest
+
+  lint-and-test-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Match Dockerfile and package.json
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json # or web/yarn.lock
+    - name: Install dependencies
+      run: npm ci # Use ci for cleaner installs in CI
+    - name: Lint with ESLint
+      run: npm run lint
+    - name: Test with Vitest
+      run: npm run test -- --run # '--run' makes Vitest exit after tests
+
+  # Optional: Add a build job to ensure Docker images can be built
+  # build-docker-images:
+  #   runs-on: ubuntu-latest
+  #   needs: [lint-and-test-backend, lint-and-test-frontend] # Run after tests pass
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Build Backend Docker image
+  #     run: docker build -t backend-image ./api
+  #   - name: Build Frontend Docker image
+  #     run: docker build -t frontend-image ./web
+  #     # You might need to pass build args for VITE_API_BASE_URL if not using default
+  #     # with:
+  #     #   build-args: |
+  #     #     VITE_API_BASE_URL=/api/prod/v1
+  #
+  # Optional: SonarCloud Scan (if you set it up)
+  # sonarcloud:
+  #   name: SonarCloud
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  #     - name: SonarCloud Scan
+  #       uses: SonarSource/sonarcloud-github-action@master
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Store this in GitHub secrets for your repository

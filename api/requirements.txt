@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+asyncpg
+psycopg2-binary
+alembic
+pydantic-settings
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart # For form data, good for login
+pytest
+pytest-asyncio # For async pytest tests
+httpx # For testing FastAPI async apps

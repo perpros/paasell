@@ -1,0 +1,83 @@
+/* Basic Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+ Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f4f4f4;
+  margin: 0; /* Ensure no default margin */
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Basic Variables (can be customized or expanded with CSS Custom Properties) */
+:root {
+  --color-background: #FFFFFF;
+  --color-background-soft: #F9F9F9;
+  --color-background-mute: #F1F1F1;
+
+  --color-border: #E0E0E0;
+  --color-border-hover: #CCCCCC;
+
+  --color-heading: #2c3e50;
+  --color-text: #333333;
+
+  --color-primary: #007bff;
+  --color-primary-hover: #0056b3;
+
+  --section-gap: 160px; /* Example for spacing, adjust as needed */
+}
+
+
+/* TailwindCSS placeholder classes (if you decide to integrate it later) */
+/* You would typically use @tailwind base; @tailwind components; @tailwind utilities; */
+/* For now, these are just comments */
+/* .container { ... } */
+
+/* Basic responsive typography if needed */
+@media (min-width: 768px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 18px;
+  }
+  #app {
+    /* display: grid; */ /* Example: could use grid for layout */
+    /* grid-template-columns: 1fr 4fr; */
+    /* padding: 0 2rem; */
+  }
+}
