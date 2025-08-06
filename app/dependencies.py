@@ -3,10 +3,12 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
-from . import crud, models, schemas, security
+from . import models, security
 from .database import SessionLocal
+from .api.users import repository as user_repository
+from .schemas import token as token_schema
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/token")
 
 def get_db():
     db = SessionLocal()
@@ -26,10 +28,10 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = schemas.TokenData(username=username)
+        token_data = token_schema.TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_username(db, username=token_data.username)
+    user = user_repository.get_user_by_username(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user

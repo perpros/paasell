@@ -1,6 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
-from .models import Role
+from ..models import Role
 
 class UserBase(BaseModel):
     username: str
@@ -15,10 +14,3 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
